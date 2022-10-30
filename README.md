@@ -1,6 +1,6 @@
 # About
 
-I used the languages I know to list a directory and then read 2 files from each of 1286 folders. One file should be read entirely, the second - only the first line.
+I used the languages I know to list a directory and then read 2 files from each of 1286 folders. One file should be read entirely, the other - only the first line.
 
 Windows 10 and Docker on WSL2 (synchronized with filesystem by volumes) on SSD Samsung 870 EVO 500GB
 
