@@ -1,3 +1,5 @@
+#@author Stanislav Polaniev <spolanyev@gmail.com>
+
 import time
 import os
 

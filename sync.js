@@ -1,8 +1,9 @@
+//@author Stanislav Polaniev <spolanyev@gmail.com>
+
 'use strict';
 
 const path = require('node:path');
 const fs = require('node:fs');
-const readline = require('node:readline');
 
 const startTime = Math.floor(new Date().getTime());
 let wordCount = 0;
