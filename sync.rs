@@ -1,5 +1,3 @@
-//@author Stanislav Polaniev <spolanyev@gmail.com>
-
 use std::fs;
 use std::fs::File;
 use std::io::BufRead;
@@ -46,11 +44,12 @@ fn main() {
                     let file = File::open(full_path_translation).unwrap();
                     let mut reader = BufReader::new(file);
                     reader.read_line(&mut word).unwrap();
+                    word = word.trim().to_owned();
 
                     if word.is_empty() {
                         word = entry.file_name().into_string().unwrap();
                     }
-                    selected_words.push(word.trim().to_owned());
+                    selected_words.push(word);
                 }
             }
         }
