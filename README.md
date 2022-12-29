@@ -19,7 +19,7 @@ Ubuntu 22.04 LTS on HDD WDC WD5000AAKX-00ERMA0
 | __python sync.py__ |        0.22        |         4.5         | __python async-trio.py**__ |             0.65              |       3.1***        |
 | __./go-sync__      |        0.17        |         6.7         | __./go-async**__           |             0.05              |         1.3         |
 | __./rust-sync__    |        0.15        |         4.2         | __./rust-async-tokio**__   |             0.05              |         0.8         |
-| __./cpp-sync__     |        0.17        |         ***         | __n/a__                    |              n/a              |         n/a         |
+| __./cpp-sync__     |        0.17        |         ***         |                            |                               |                     |
 
 ### Ubuntu
 
@@ -30,7 +30,7 @@ Ubuntu 22.04 LTS on HDD WDC WD5000AAKX-00ERMA0
 | __python sync.py__  |       0.045       | __python async-trio.py**__ | (error: too many open files) | 
 | __./go-sync__       |       0.019       | __./go-async**__           |            0.007             | 
 | __./rust-sync__     |       0.015       | __./rust-async-tokio**__   |            0.014             | 
-| __./cpp-sync__      |        ***        | __n/a__                    |             n/a              | 
+| __./cpp-sync__      |        ***        |                            |                              | 
 
 
 \* Swoole was faster than Amp and ReactPHP, Tokio was faster than native thread and async-std<br/>
