@@ -1,12 +1,13 @@
 //@author Stanislav Polaniev <spolanyev@gmail.com>
 
+#include <algorithm>
 #include <chrono>
 #include <iomanip>
 #include <iostream>
+#include <filesystem>
 #include <fstream>
 #include <string>
 #include <vector>
-#include <filesystem>
 
 int main() {
     auto start_time = std::chrono::high_resolution_clock::now();
