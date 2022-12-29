@@ -1,3 +1,5 @@
+//@author Stanislav Polaniev <spolanyev@gmail.com>
+
 #include <chrono>
 #include <iomanip>
 #include <iostream>
