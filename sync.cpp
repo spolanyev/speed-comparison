@@ -25,34 +25,35 @@ int main() {
                 int number;
                 frequency >> number;
                 frequency.close();
-                if (798 > number) {
-                    continue;
-                }
-                std::filesystem::path full_path_translation = entry.path() / "translation.txt";
-                if (std::filesystem::exists(full_path_translation)) {
-                    std::string word;
-                    std::ifstream translation(full_path_translation);
-                    std::getline(translation, word);
-                    translation.close();
-                    //trim leading whitespace
-                    word.erase(word.begin(), std::find_if(word.begin(), word.end(), [](int ch) {
-                        return !std::isspace(ch);
-                    }));
-                    //trim trailing whitespace
-                    word.erase(std::find_if(word.rbegin(), word.rend(), [](int ch) {
-                        return !std::isspace(ch);
-                    }).base(), word.end());
-                    if (word.empty()) {
-                        word = entry.path().filename().string();
+                if (number >= 798) {
+                    std::filesystem::path full_path_translation = entry.path() / "translation.txt";
+                    if (std::filesystem::exists(full_path_translation)) {
+                        std::string word;
+                        std::ifstream translation(full_path_translation);
+                        std::getline(translation, word);
+                        translation.close();
+                        //trim leading whitespace
+                        word.erase(word.begin(), std::find_if(word.begin(), word.end(), [](int ch) {
+                            return !std::isspace(ch);
+                        }));
+                        //trim trailing whitespace
+                        word.erase(std::find_if(word.rbegin(), word.rend(), [](int ch) {
+                            return !std::isspace(ch);
+                        }).base(), word.end());
+                        if (word.empty()) {
+                            word = entry.path().filename().string();
+                        }
+                        selected_words.push_back(word);
                     }
-                    selected_words.push_back(word);
                 }
             }
         }
     }
-    double elapsed_time = std::chrono::duration<double>(std::chrono::high_resolution_clock::now() - start_time).count();
+
     std::cout << "selected " << selected_words.size() << " words from " << word_count << ", took " << std::fixed
-              << std::setprecision(3) << elapsed_time << " seconds" << std::endl;
+              << std::setprecision(3)
+              << std::chrono::duration<double>(std::chrono::high_resolution_clock::now() - start_time).count()
+              << " seconds" << std::endl;
     /*
     for (size_t i = 0; i < selected_words.size(); i++) {
         std::cout << i + 1 << ": " << selected_words[i] << std::endl;

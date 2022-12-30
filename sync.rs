@@ -32,24 +32,23 @@ fn main() {
             if full_path_frequency.is_file() {
                 let number = fs::read_to_string(full_path_frequency).unwrap();
                 let number: u32 = number.parse().unwrap();
-                if 798 > number {
-                    continue;
-                }
-                let full_path_translation = full_path_directory
-                    .join(entry.file_name())
-                    .join("translation.txt");
-                if full_path_translation.is_file() {
-                    let mut word = String::new();
+                if number >= 798 {
+                    let full_path_translation = full_path_directory
+                        .join(entry.file_name())
+                        .join("translation.txt");
+                    if full_path_translation.is_file() {
+                        let mut word = String::new();
 
-                    let file = File::open(full_path_translation).unwrap();
-                    let mut reader = BufReader::new(file);
-                    reader.read_line(&mut word).unwrap();
-                    word = word.trim().to_owned();
+                        let file = File::open(full_path_translation).unwrap();
+                        let mut reader = BufReader::new(file);
+                        reader.read_line(&mut word).unwrap();
+                        word = word.trim().to_owned();
 
-                    if word.is_empty() {
-                        word = entry.file_name().into_string().unwrap();
+                        if word.is_empty() {
+                            word = entry.file_name().into_string().unwrap();
+                        }
+                        selected_words.push(word);
                     }
-                    selected_words.push(word);
                 }
             }
         }
@@ -63,7 +62,7 @@ fn main() {
     );
     /*
     for (i, word) in selected_words.into_iter().enumerate() {
-        println!("{} {}", i, word);
+        println!("{} {}", i + 1, word);
     }
     */
 }

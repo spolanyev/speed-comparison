@@ -1,5 +1,3 @@
-//@author Stanislav Polaniev <spolanyev@gmail.com>
-
 package main
 
 import (
@@ -30,26 +28,24 @@ func main() {
 			if _, err := os.Stat(fullPathFrequency); err == nil {
 				slice, _ := os.ReadFile(fullPathFrequency)
 				frequency, _ := strconv.Atoi(string(slice))
-				if 798 > frequency {
-					continue
-				}
-				fullPathTranslation := path.Join(fullPathDirectory, entry.Name(), "translation.txt")
-				if _, err := os.Stat(fullPathTranslation); err == nil {
-					word := ""
+				if frequency >= 798 {
+					fullPathTranslation := path.Join(fullPathDirectory, entry.Name(), "translation.txt")
+					if _, err := os.Stat(fullPathTranslation); err == nil {
+						word := ""
 
-					fileDescriptor, _ := os.Open(fullPathTranslation)
+						fileDescriptor, _ := os.Open(fullPathTranslation)
 
-					reader := bufio.NewReader(fileDescriptor)
-					word, err = reader.ReadString('\n')
-					word = strings.TrimSpace(word)
+						reader := bufio.NewReader(fileDescriptor)
+						word, err = reader.ReadString('\n')
+						word = strings.TrimSpace(word)
 
-					_ = fileDescriptor.Close()
+						_ = fileDescriptor.Close()
 
-					if word == "" {
-						word = entry.Name()
+						if word == "" {
+							word = entry.Name()
+						}
+						selectedWords = append(selectedWords, word)
 					}
-					//fmt.Println(word)
-					selectedWords = append(selectedWords, word)
 				}
 			}
 		}
@@ -57,10 +53,8 @@ func main() {
 
 	fmt.Printf("selected %d words from %d, took %.3f seconds\r\n", len(selectedWords), wordCount, time.Since(startTime).Seconds())
 	/*
-		i := 0
-		for _, word := range selectedWords {
-			i++
-			fmt.Printf("%d. %s\n", i, word)
+		for i, word := range selectedWords {
+			fmt.Printf("%d. %s\n", i+1, word)
 		}
 	*/
 }
