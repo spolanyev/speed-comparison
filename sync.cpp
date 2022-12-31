@@ -15,7 +15,10 @@ int main() {
     std::vector<std::string> selected_words;
 
     std::filesystem::path full_path_directory = std::filesystem::canonical(
-            "./../../../mine/dictionary/data/a");
+            //"./../../../mine/dictionary/data/a"
+            //"./../../mine/dictionary/data/a"
+            "./../data/a"
+            );
     if (std::filesystem::exists(full_path_directory)) {
         for (const auto &entry: std::filesystem::directory_iterator(full_path_directory)) {
             word_count++;
