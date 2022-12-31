@@ -15,9 +15,9 @@ int main() {
     std::vector<std::string> selected_words;
 
     std::filesystem::path full_path_directory = std::filesystem::canonical(
-            //"./../../../mine/dictionary/data/a"
+            "./../../../mine/dictionary/data/a"
             //"./../../mine/dictionary/data/a"
-            "./../data/a"
+            //"./../data/a"
             );
     if (std::filesystem::exists(full_path_directory)) {
         for (const auto &entry: std::filesystem::directory_iterator(full_path_directory)) {
@@ -59,7 +59,7 @@ int main() {
               << " seconds" << std::endl;
     /*
     for (size_t i = 0; i < selected_words.size(); i++) {
-        std::cout << i + 1 << ": " << selected_words[i] << std::endl;
+        std::cout << i + 1 << " " << selected_words[i] << std::endl;
     }
     */
     return 0;
