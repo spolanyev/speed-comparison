@@ -1,5 +1,7 @@
 <?php
 
+//@author Stanislav Polaniev <spolanyev@gmail.com>
+
 declare(strict_types=1);
 
 $startTime = microtime(true);

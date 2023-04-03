@@ -1,3 +1,5 @@
+//@author Stanislav Polaniev <spolanyev@gmail.com>
+
 use std::fs;
 use std::fs::File;
 use std::io::BufRead;

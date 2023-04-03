@@ -1,3 +1,5 @@
+//@author Stanislav Polaniev <spolanyev@gmail.com>
+
 'use strict';
 
 const path = require('node:path');
@@ -42,7 +44,7 @@ if (fs.statSync(fullPathDirectory).isDirectory()) {
                             leftOver = leftOver.substring(startPosition);
                         }
 
-                    if ('' == word) {
+                    if ('' === word) {
                         word = entry.name;
                     }
                     selectedWords.push(word);
