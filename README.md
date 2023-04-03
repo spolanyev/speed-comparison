@@ -1,6 +1,6 @@
 # About
 
-I used several languages to list a directory with 1286 folders to read in each folder one file entirely and another file's first line only to compare the speed.
+I used several languages to compare the speed of listing a directory containing 1286 folders and reading from them both an entire file and only the first line of a file.
 
 Windows 10 and Docker on WSL2 (synchronized with filesystem by volumes) on SSD Samsung 870 EVO 500GB
 
