@@ -21,8 +21,8 @@ if (is_dir($fullPathDirectory)) {
                         $fullPathTranslation = $fullPathDirectory . DIRECTORY_SEPARATOR . $entry . DIRECTORY_SEPARATOR . 'translation.txt';
                         if (is_file($fullPathTranslation)) {
                             $word = '';
-                            if ($filePointer = fopen($fullPathTranslation, 'rb')) {
-                                $line = fgets($filePointer);
+                            if ($filePointer = fopen($fullPathTranslation, 'r')) {
+                                $line = fgets($filePointer, 128);
                                 fclose($filePointer);
                                 if (false !== $line) {
                                     $word = trim($line);
@@ -42,9 +42,14 @@ if (is_dir($fullPathDirectory)) {
     }
 }
 
-echo 'selected ', count($selectedWords), ' words from ', $wordCount, ', took ', round(microtime(true) - $startTime, 3), ' seconds', PHP_EOL;
+echo sprintf(
+    "selected %d words from %d, took %.3f seconds\n",
+    count($selectedWords),
+    $wordCount,
+    round(microtime(true) - $startTime, 3)
+);
 /*
 foreach ($selectedWords as $i => $word) {
-    echo ++$i, ' ', $word, PHP_EOL;
+    echo sprintf("%d. %s\n", ++$i, $word);
 }
 */

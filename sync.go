@@ -13,47 +13,52 @@ import (
 	"time"
 )
 
+var startTime = time.Now()
+var wordCount = 0
+var selectedWords []string
+
 // var directory = filepath.FromSlash("./../data/a")
-var directory = filepath.FromSlash("./../../mine/dictionary/data/a")
+var directory = filepath.FromSlash("./../../../private/speed-comparison/data/a")
 
 func main() {
-	startTime := time.Now()
-	wordCount := 0
-	selectedWords := []string{}
+	if fullPathDirectory, err := filepath.Abs(directory); err == nil {
+		if _, err := os.Stat(fullPathDirectory); err == nil {
+			if entries, err := os.ReadDir(fullPathDirectory); err == nil {
+				for _, entry := range entries {
+					wordCount += 1
+					fullPathFrequency := path.Join(fullPathDirectory, entry.Name(), "2015-2017-spoken-frequency.txt")
+					if _, err := os.Stat(fullPathFrequency); err == nil {
+						if slice, err := os.ReadFile(fullPathFrequency); err == nil {
+							if frequency, err := strconv.Atoi(string(slice)); err == nil {
+								if frequency >= 798 {
+									fullPathTranslation := path.Join(fullPathDirectory, entry.Name(), "translation.txt")
+									if _, err := os.Stat(fullPathTranslation); err == nil {
+										word := ""
+										if fileDescriptor, err := os.Open(fullPathTranslation); err == nil {
+											reader := bufio.NewReaderSize(fileDescriptor, 128)
+											if word, err = reader.ReadString('\n'); err == nil {
+												word = strings.TrimSpace(word)
+												if err := fileDescriptor.Close(); err != nil {
+													fmt.Println("Error closing file:", err)
+												}
+											}
 
-	fullPathDirectory, _ := filepath.Abs(directory)
-	if _, err := os.Stat(fullPathDirectory); err == nil {
-		entries, _ := os.ReadDir(fullPathDirectory)
-		for _, entry := range entries {
-			wordCount += 1
-			fullPathFrequency := path.Join(fullPathDirectory, entry.Name(), "2015-2017-spoken-frequency.txt")
-			if _, err := os.Stat(fullPathFrequency); err == nil {
-				slice, _ := os.ReadFile(fullPathFrequency)
-				frequency, _ := strconv.Atoi(string(slice))
-				if frequency >= 798 {
-					fullPathTranslation := path.Join(fullPathDirectory, entry.Name(), "translation.txt")
-					if _, err := os.Stat(fullPathTranslation); err == nil {
-						word := ""
-
-						fileDescriptor, _ := os.Open(fullPathTranslation)
-
-						reader := bufio.NewReader(fileDescriptor)
-						word, err = reader.ReadString('\n')
-						word = strings.TrimSpace(word)
-
-						_ = fileDescriptor.Close()
-
-						if word == "" {
-							word = entry.Name()
+											if word == "" {
+												word = entry.Name()
+											}
+											selectedWords = append(selectedWords, word)
+										}
+									}
+								}
+							}
 						}
-						selectedWords = append(selectedWords, word)
 					}
 				}
 			}
 		}
 	}
 
-	fmt.Printf("selected %d words from %d, took %.3f seconds\r\n", len(selectedWords), wordCount, time.Since(startTime).Seconds())
+	fmt.Printf("selected %d words from %d, took %.3f seconds\n", len(selectedWords), wordCount, time.Since(startTime).Seconds())
 	/*
 		for i, word := range selectedWords {
 			fmt.Printf("%d. %s\n", i+1, word)

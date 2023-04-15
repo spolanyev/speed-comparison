@@ -4,7 +4,6 @@
 
 const path = require('node:path');
 const fs = require('node:fs');
-const readline = require('node:readline');
 
 const startTime = Math.floor(new Date().getTime());
 let wordCount = 0;
@@ -25,24 +24,23 @@ if (fs.statSync(fullPathDirectory).isDirectory()) {
                     let word = '';
 
                     const filePointer = fs.openSync(fullPathTranslation, 'r');
-                    const buffer = Buffer.alloc(1024);
-                    let leftOver = '';
-                    let read;
-                    let line;
-                    let startPosition;
-                    let position;
-                    label:
-                        while (0 !== (read = fs.readSync(filePointer, buffer, 0, 1024, null))) {
-                            leftOver += buffer.toString('utf8', 0, read);
-                            startPosition = 0
-                            while (-1 !== (position = leftOver.indexOf("\n", startPosition))) {
-                                line = leftOver.substring(startPosition, position);
-                                word = line;
-                                break label;
-                                startPosition = position + 1;
-                            }
-                            leftOver = leftOver.substring(startPosition);
+                    const buffer = Buffer.alloc(128);
+                    let bytesRead = 0;
+                    let portions = [];
+
+                    while ((bytesRead = fs.readSync(filePointer, buffer, 0, buffer.length)) > 0) {
+                        const newlineIndex = buffer.indexOf("\n");
+                        if (-1 !== newlineIndex) {
+                            portions.push(buffer.toString('utf8', 0, newlineIndex));
+                            break;
+                        } else {
+                            portions.push(buffer.toString('utf8', 0, bytesRead));
                         }
+                    }
+
+                    if (0 !== portions.length) {
+                        word = portions[0].trim();
+                    }
 
                     if ('' === word) {
                         word = entry.name;
@@ -58,6 +56,6 @@ if (fs.statSync(fullPathDirectory).isDirectory()) {
 console.log('selected ' + selectedWords.length + ' words from ' + wordCount + ', took ' + (Math.floor(new Date().getTime()) - startTime) / 1000 + ' seconds');
 /*
 selectedWords.forEach((word, i) => {
-    console.log('' + ++i + ' ' + word);
+    console.log('' + ++i + '. ' + word);
 });
 */

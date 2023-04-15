@@ -1,6 +1,5 @@
 //@author Stanislav Polaniev <spolanyev@gmail.com>
 
-#include <algorithm>
 #include <chrono>
 #include <iomanip>
 #include <iostream>
@@ -15,10 +14,7 @@ int main() {
     std::vector<std::string> selected_words;
 
     std::filesystem::path full_path_directory = std::filesystem::canonical(
-            "./../../../mine/dictionary/data/a"
-            //"./../../mine/dictionary/data/a"
-            //"./../data/a"
-            );
+            "./../../../private/speed-comparison/data/a");
     if (std::filesystem::exists(full_path_directory)) {
         for (const auto &entry: std::filesystem::directory_iterator(full_path_directory)) {
             word_count++;
@@ -35,14 +31,18 @@ int main() {
                         std::ifstream translation(full_path_translation);
                         std::getline(translation, word);
                         translation.close();
-                        //trim leading whitespace
-                        word.erase(word.begin(), std::find_if(word.begin(), word.end(), [](int ch) {
-                            return !std::isspace(ch);
-                        }));
-                        //trim trailing whitespace
-                        word.erase(std::find_if(word.rbegin(), word.rend(), [](int ch) {
-                            return !std::isspace(ch);
-                        }).base(), word.end());
+
+                        //trim
+                        size_t start = 0;
+                        while (start < word.length() && std::isspace(word[start])) {
+                            start++;
+                        }
+                        size_t end = word.length() - 1;
+                        while (end > start && std::isspace(word[end])) {
+                            end--;
+                        }
+                        word = word.substr(start, end - start + 1);
+
                         if (word.empty()) {
                             word = entry.path().filename().string();
                         }
@@ -53,13 +53,13 @@ int main() {
         }
     }
 
-    std::cout << "selected " << selected_words.size() << " words from " << word_count << ", took " << std::fixed
-              << std::setprecision(3)
-              << std::chrono::duration<double>(std::chrono::high_resolution_clock::now() - start_time).count()
-              << " seconds" << std::endl;
+    std::cout << "selected " << selected_words.size() << " words from " << word_count << ", took "
+              << std::fixed << std::setprecision(3) << std::chrono::duration<double>(
+            std::chrono::high_resolution_clock::now() - start_time)
+                      .count() << " seconds\n";
     /*
-    for (size_t i = 0; i < selected_words.size(); i++) {
-        std::cout << i + 1 << " " << selected_words[i] << std::endl;
+    for (size_t i = 0; const auto &word: selected_words) {
+        std::cout << ++i << ". " << word << "\n";
     }
     */
     return 0;
