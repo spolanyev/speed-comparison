@@ -7,7 +7,7 @@ const fs = require('node:fs');
 
 const startTime = Math.floor(new Date().getTime());
 let wordCount = 0;
-let selectedWords = [];
+const selectedWords = [];
 
 const fullPathDirectory = path.join(__dirname, '..', 'data', 'a');
 if (fs.statSync(fullPathDirectory).isDirectory()) {
@@ -21,25 +21,26 @@ if (fs.statSync(fullPathDirectory).isDirectory()) {
             if (parseInt(number) >= 798) {
                 const fullPathTranslation = path.join(fullPathDirectory, entry.name, 'translation.txt');
                 if (fs.statSync(fullPathTranslation).isFile()) {
+                    
                     let word = '';
+                    const chunk = Buffer.alloc(128);
+                    let bytesRead = 0;
+                    let remaining = '';
+                    let isNewLineFound = false;
 
                     const filePointer = fs.openSync(fullPathTranslation, 'r');
-                    const buffer = Buffer.alloc(128);
-                    let bytesRead = 0;
-                    let portions = [];
-
-                    while ((bytesRead = fs.readSync(filePointer, buffer, 0, buffer.length)) > 0) {
-                        const newlineIndex = buffer.indexOf("\n");
-                        if (-1 !== newlineIndex) {
-                            portions.push(buffer.toString('utf8', 0, newlineIndex));
+                    while ((bytesRead = fs.readSync(filePointer, chunk, 0, chunk.length)) > 0) {
+                        remaining += chunk;
+                        let newlineIndex;
+                        if ((newlineIndex = remaining.indexOf('\n')) !== -1) {
+                            isNewLineFound = true;
+                            word = remaining.substring(0, newlineIndex).trim();
                             break;
-                        } else {
-                            portions.push(buffer.toString('utf8', 0, bytesRead));
                         }
                     }
 
-                    if (0 !== portions.length) {
-                        word = portions[0].trim();
+                    if (!isNewLineFound) {
+                        word = remaining.trim();
                     }
 
                     if ('' === word) {

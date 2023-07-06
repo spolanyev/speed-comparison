@@ -15,7 +15,7 @@ import (
 
 var startTime = time.Now()
 var wordCount = 0
-var selectedWords []string
+var selectedWords = make([]string, 0)
 
 // var directory = filepath.FromSlash("./../data/a")
 var directory = filepath.FromSlash("./../../../private/speed-comparison/data/a")
