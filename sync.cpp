@@ -1,12 +1,13 @@
 //@author Stanislav Polaniev <spolanyev@gmail.com>
 
 #include <chrono>
-#include <iomanip>
 #include <iostream>
 #include <filesystem>
 #include <fstream>
 #include <string>
 #include <vector>
+#include <ranges>
+#include <format>
 
 int main() {
     auto start_time = std::chrono::high_resolution_clock::now();
@@ -16,50 +17,44 @@ int main() {
     std::filesystem::path full_path_directory = std::filesystem::canonical(
             "./../../../private/speed-comparison/data/a");
     if (std::filesystem::exists(full_path_directory)) {
-        for (const auto &entry: std::filesystem::directory_iterator(full_path_directory)) {
+        for (const auto entry: std::filesystem::directory_iterator(full_path_directory)
+                               | std::views::transform([](const auto &entry) {
+            return std::make_pair(entry, entry.path() / "2015-2017-spoken-frequency.txt");
+        })) {
             word_count++;
-            std::filesystem::path full_path_frequency = entry.path() / "2015-2017-spoken-frequency.txt";
+            auto &[entry_info, full_path_frequency] = entry;
             if (std::filesystem::exists(full_path_frequency)) {
-                std::ifstream frequency(full_path_frequency);
-                int number;
-                frequency >> number;
-                frequency.close();
-                if (number >= 798) {
-                    std::filesystem::path full_path_translation = entry.path() / "translation.txt";
-                    if (std::filesystem::exists(full_path_translation)) {
-                        std::string word;
-                        std::ifstream translation(full_path_translation);
-                        std::getline(translation, word);
-                        translation.close();
+                if (std::ifstream frequency(full_path_frequency); frequency) {
+                    int number;
+                    frequency >> number;
+                    if (number >= 798) {
+                        std::filesystem::path full_path_translation = entry_info.path() / "translation.txt";
+                        if (std::filesystem::exists(full_path_translation)) {
+                            std::string word;
+                            if (std::ifstream translation{full_path_translation}; std::getline(translation, word)) {
+                                //trim
+                                word.erase(0, word.find_first_not_of(" \t\n\r"));
+                                word.erase(word.find_last_not_of(" \t\n\r") + 1);
+                            }
 
-                        //trim
-                        size_t start = 0;
-                        while (start < word.length() && std::isspace(word[start])) {
-                            start++;
+                            if (word.empty()) {
+                                word = entry_info.path().filename().string();
+                            }
+                            selected_words.push_back(word);
                         }
-                        size_t end = word.length() - 1;
-                        while (end > start && std::isspace(word[end])) {
-                            end--;
-                        }
-                        word = word.substr(start, end - start + 1);
-
-                        if (word.empty()) {
-                            word = entry.path().filename().string();
-                        }
-                        selected_words.push_back(word);
                     }
                 }
             }
         }
     }
 
-    std::cout << "selected " << selected_words.size() << " words from " << word_count << ", took "
-              << std::fixed << std::setprecision(3) << std::chrono::duration<double>(
-            std::chrono::high_resolution_clock::now() - start_time)
-                      .count() << " seconds\n";
+    std::cout << std::format("selected {} words from {}, took {:.3f} seconds\n", selected_words.size(), word_count,
+                             std::chrono::duration<double>(
+                                     std::chrono::high_resolution_clock::now() - start_time).count());
     /*
-    for (size_t i = 0; const auto &word: selected_words) {
-        std::cout << ++i << ". " << word << "\n";
+    size_t i = 0;
+    for (const auto &word: selected_words) {
+        std::cout << std::format("{}. {}\n", ++i, word);
     }
     */
     return 0;
